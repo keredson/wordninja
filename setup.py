@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from setuptools import setup
+from distutils.core import setup
 from distutils.command.install import INSTALL_SCHEMES
 for scheme in INSTALL_SCHEMES.values():
     scheme['data'] = scheme['purelib']
@@ -12,9 +12,10 @@ setup(name='wordninja',
   description="Probabilistically split concatenated words using NLP based on English Wikipedia uni-gram frequencies.",
   author='Derek Anderson',
   author_email='public@kered.org',
+  packages = ['wordninja'],
   url='https://github.com/keredson/wordninja',
-  package_data={'': ['wordninja_words.txt.gz']},
+  package_data={'wordninja': ['wordninja_words.txt.gz']},
+  package_dir={'wordninja': 'wordninja'},
   include_package_data=True,
-  data_files=[('', ['wordninja_words.txt.gz'])],
   py_modules=['wordninja'],
 )

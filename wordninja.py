@@ -3,7 +3,7 @@ from math import log
 
 
 
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 
 
 # I did not author this code, only tweaked it from:
@@ -13,7 +13,7 @@ __version__ = '0.1.2'
 
 
 # Build a cost dictionary, assuming Zipf's law and cost = -math.log(probability).
-with gzip.open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'wordninja_words.txt.gz')) as f:
+with gzip.open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'wordninja','wordninja_words.txt.gz')) as f:
   words = f.read().decode().split()
 _wordcost = dict((k, log((i+1)*log(len(words)))) for i,k in enumerate(words))
 _maxword = max(len(x) for x in words)
