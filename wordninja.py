@@ -3,7 +3,7 @@ from math import log
 
 
 
-__version__ = '0.1.3'
+__version__ = '0.1.4'
 
 
 # I did not author this code, only tweaked it from:
@@ -23,6 +23,7 @@ _SPLIT_RE = re.compile("[^a-zA-Z0-9]+")
 
 def split(s):
   """Uses dynamic programming to infer the location of spaces in a string without spaces."""
+  s = s.lower()
   l = [_split(x) for x in _SPLIT_RE.split(s)]
   return [item for sublist in l for item in sublist]
 
