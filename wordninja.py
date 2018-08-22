@@ -2,8 +2,7 @@ import gzip, os, re
 from math import log
 
 
-
-__version__ = '0.1.4'
+__version__ = '0.1.5'
 
 
 # I did not author this code, only tweaked it from:
@@ -11,22 +10,33 @@ __version__ = '0.1.4'
 # Thanks Generic Human!
 
 
+# Modifications by Scott Randal (Genesys)
+#
+# 1. Preserve original character case after splitting
+# 2. Avoid splitting every post-digit character in a mixed string (e.g. 'win32intel')
+# 3. Avoid splitting digit sequences
+# 4. Handle input containing apostrophes (for possessives and contractions)
+#
+# Wordlist changes:
+# Change 2 required adding single digits to the wordlist
+# Change 4 required the following wordlist additions:
+#   's
+#   '
+#   <list of contractions>
+
 
 # Build a cost dictionary, assuming Zipf's law and cost = -math.log(probability).
 with gzip.open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'wordninja','wordninja_words.txt.gz')) as f:
   words = f.read().decode().split()
 _wordcost = dict((k, log((i+1)*log(len(words)))) for i,k in enumerate(words))
 _maxword = max(len(x) for x in words)
-_SPLIT_RE = re.compile("[^a-zA-Z0-9]+")
-
+_SPLIT_RE = re.compile("[^a-zA-Z0-9']+")
 
 
 def split(s):
   """Uses dynamic programming to infer the location of spaces in a string without spaces."""
-  s = s.lower()
   l = [_split(x) for x in _SPLIT_RE.split(s)]
   return [item for sublist in l for item in sublist]
-
 
 
 def _split(s):
@@ -35,7 +45,7 @@ def _split(s):
     # Returns a pair (match_cost, match_length).
     def best_match(i):
         candidates = enumerate(reversed(cost[max(0, i-_maxword):i]))
-        return min((c + _wordcost.get(s[i-k-1:i], 9e999), k+1) for k,c in candidates)
+        return min((c + _wordcost.get(s[i-k-1:i].lower(), 9e999), k+1) for k,c in candidates)
 
     # Build the cost array.
     cost = [0]
@@ -49,7 +59,20 @@ def _split(s):
     while i>0:
         c,k = best_match(i)
         assert c == cost[i]
-        out.append(s[i-k:i])
+        # Apostrophe and digit handling (added by Genesys)
+        newToken = True
+        if not s[i-k:i] == "'": # ignore a lone apostrophe
+            if len(out) > 0:
+                # re-attach split 's and split digits
+                if out[-1] == "'s" \
+                  or (s[i-1].isdigit() and out[-1][0].isdigit()): # digit followed by digit
+                    out[-1] = s[i-k:i] + out[-1] # combine current token with previous token
+                    newToken = False
+        # (End of Genesys addition)
+
+        if newToken:
+            out.append(s[i-k:i])
+
         i -= k
 
     return reversed(out)
