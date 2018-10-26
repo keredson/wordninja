@@ -3,12 +3,13 @@
 Word Ninja
 ==========
 
-Slice your munged together words!  Seriously, Take anything, `'imateapot'` for example, would become `['im', 'a', 'teapot']`.  Useful for humanizing stuff (like database tables when people don't like underscores).
+Slice your munged together words!  Seriously, Take anything, `'imateapot'` for example, would become `['im', 'a', 'teapot']`.  Useful for humanizing stuff (like database tables when people don't like underscores). 
 
 This project is repackaging the excellent work from here: http://stackoverflow.com/a/11642687/2449774
 
 Usage
 -----
+NOTE: Requires input be all lowercase (otherwise it will split the text into individual letters).
 ```
 $ python
 >>> import wordninja
