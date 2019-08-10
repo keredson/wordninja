@@ -22,6 +22,10 @@ class TestWordNinja(unittest.TestCase):
   def test_apostrophes(self):
     self.assertEqual(list(wordninja.split("that'sthesheriff'sbadge")), ["that's","the","sheriff's","badge"])
 
+  def test_custom_model(self):
+    lm = wordninja.LanguageModel('test_lang.txt.gz')
+    self.assertEqual(list(lm.split('derek')), ['der','ek'])
+
 if __name__ == '__main__':
     unittest.main()
 
