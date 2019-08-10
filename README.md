@@ -48,3 +48,20 @@ How to Install
 pip3 install wordninja
 ```
 
+Custom Language Models
+----------------------
+#1 most requested feature!  If you want to do something other than english (or want to specify your own model of english), this is how you do it.
+
+```
+>>> lm = wordninja.LanguageModel('my_lang.txt.gz')
+>>> lm.split('derek')
+['der','ek']
+```
+
+Language files must be gziped text files with one word per line in decreasing order of probability.
+
+If you want to make your model the default, set:
+
+```
+wordninja.DEFAULT_LANGUAGE_MODEL = wordninja.LanguageModel('my_lang.txt.gz')
+```
