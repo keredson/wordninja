@@ -1,4 +1,4 @@
-import gzip, os, re
+import bz2, os, re
 from math import log
 
 
@@ -28,7 +28,7 @@ __version__ = '2.0.0'
 class LanguageModel(object):
   def __init__(self, word_file):
     # Build a cost dictionary, assuming Zipf's law and cost = -math.log(probability).
-    with gzip.open(word_file) as f:
+    with bz2.open(word_file) as f:
       words = f.read().decode().split()
     self._wordcost = dict((k, log((i+1)*log(len(words)))) for i,k in enumerate(words))
     self._maxword = max(len(x) for x in words)
@@ -77,7 +77,7 @@ class LanguageModel(object):
 
     return reversed(out)
 
-DEFAULT_LANGUAGE_MODEL = LanguageModel(os.path.join(os.path.dirname(os.path.abspath(__file__)),'wordninja','wordninja_words.txt.gz'))
+DEFAULT_LANGUAGE_MODEL = LanguageModel(os.path.join(os.path.dirname(os.path.abspath(__file__)),'wordninja','wordninja_words.txt.bz2'))
 _SPLIT_RE = re.compile("[^a-zA-Z0-9']+")
 
 def split(s):
