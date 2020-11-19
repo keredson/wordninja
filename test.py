@@ -23,8 +23,11 @@ class TestWordNinja(unittest.TestCase):
     self.assertEqual(list(wordninja.split("that'sthesheriff'sbadge")), ["that's","the","sheriff's","badge"])
 
   def test_custom_model(self):
-    lm = wordninja.LanguageModel('test_lang.txt.bz2')
-    self.assertEqual(list(lm.split('derek')), ['der','ek'])
+    lm_bzip = wordninja.LanguageModel('test_lang.txt.bz2')
+    self.assertEqual(list(lm_bzip.split('derek')), ['der','ek'])
+
+    lm_gzip = wordninja.LanguageModel('test_lang.txt.gz')
+    self.assertEqual(list(lm_gzip.split('derek')), ['der','ek'])
 
 if __name__ == '__main__':
     unittest.main()
