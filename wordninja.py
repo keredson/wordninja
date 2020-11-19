@@ -2,7 +2,7 @@ import bz2, gzip, os, re
 from math import log
 
 
-__version__ = '2.0.0'
+__version__ = '2.1.0'
 
 
 # I did not author this code, only tweaked it from:
