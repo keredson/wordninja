@@ -27,12 +27,22 @@ __version__ = '2.0.0'
 
 class LanguageModel(object):
   def __init__(self, word_file):
+    self.word_file = word_file
     # Build a cost dictionary, assuming Zipf's law and cost = -math.log(probability).
     with gzip.open(word_file) as f:
       words = f.read().decode().split()
     self._wordcost = dict((k, log((i+1)*log(len(words)))) for i,k in enumerate(words))
     self._maxword = max(len(x) for x in words)
-   
+
+
+  def add_word(self, w):
+    with gzip.open(self.word_file, 'a') as f:
+      f.write(b'%b' % (w.encode('utf-8')))
+
+    num_words = len(self._wordcost) + 1
+    self._wordcost[w] = log((num_words)*log(num_words))
+    self._maxword = max(self._maxword, len(w))
+
 
   def split(self, s):
     """Uses dynamic programming to infer the location of spaces in a string without spaces."""
@@ -82,5 +92,8 @@ _SPLIT_RE = re.compile("[^a-zA-Z0-9']+")
 
 def split(s):
   return DEFAULT_LANGUAGE_MODEL.split(s)
+
+def add_word(w):
+  return DEFAULT_LANGUAGE_MODEL.add_word(w)
 
 
