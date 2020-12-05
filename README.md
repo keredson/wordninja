@@ -54,14 +54,16 @@ Custom Language Models
 
 ```
 >>> lm = wordninja.LanguageModel('my_lang.txt.gz')
+>>> lm = wordninja.LanguageModel('my_lang.txt.bz2')  # bzip2 alternative
 >>> lm.split('derek')
 ['der','ek']
 ```
 
-Language files must be gziped text files with one word per line in decreasing order of probability.
+Language files must be gziped or bziped text files with one word per line in decreasing order of probability.
 
 If you want to make your model the default, set:
 
 ```
 wordninja.DEFAULT_LANGUAGE_MODEL = wordninja.LanguageModel('my_lang.txt.gz')
+wordninja.DEFAULT_LANGUAGE_MODEL = wordninja.LanguageModel('my_lang.txt.bz2')
 ```

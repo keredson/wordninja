@@ -1,8 +1,8 @@
-import gzip, os, re
+import bz2, gzip, os, re
 from math import log
 
 
-__version__ = '2.0.0'
+__version__ = '2.1.0'
 
 
 # I did not author this code, only tweaked it from:
@@ -25,11 +25,24 @@ __version__ = '2.0.0'
 #   <list of contractions>
 
 
+MAGIC_LENGTH = 3
+class FileTypeMagicBytesRe():
+  BZIP_FILE = re.compile(b'^\\x42\\x5a\\x68')
+  GZIP_FILE = re.compile(b'^\\x1f\\x8b\\x08')
+
+
 class LanguageModel(object):
   def __init__(self, word_file):
     # Build a cost dictionary, assuming Zipf's law and cost = -math.log(probability).
-    with gzip.open(word_file) as f:
-      words = f.read().decode().split()
+    if check_magic(word_file, FileTypeMagicBytesRe.BZIP_FILE):
+      with bz2.open(word_file) as f:
+        words = f.read().decode().split()
+    elif check_magic(word_file, FileTypeMagicBytesRe.GZIP_FILE):
+      with gzip.open(word_file) as f:
+        words = f.read().decode().split()
+    else:
+      raise ValueError(f"Could not detect compression type of {word_file}. Is it gzip or bzip2?")
+
     self._wordcost = dict((k, log((i+1)*log(len(words)))) for i,k in enumerate(words))
     self._maxword = max(len(x) for x in words)
    
@@ -77,10 +90,12 @@ class LanguageModel(object):
 
     return reversed(out)
 
-DEFAULT_LANGUAGE_MODEL = LanguageModel(os.path.join(os.path.dirname(os.path.abspath(__file__)),'wordninja','wordninja_words.txt.gz'))
+def check_magic(word_file, magic):
+  with open(word_file, 'rb') as f:
+    return magic.match(f.read(MAGIC_LENGTH))
+
+DEFAULT_LANGUAGE_MODEL = LanguageModel(os.path.join(os.path.dirname(os.path.abspath(__file__)),'wordninja','wordninja_words.txt.bz2'))
 _SPLIT_RE = re.compile("[^a-zA-Z0-9']+")
 
 def split(s):
   return DEFAULT_LANGUAGE_MODEL.split(s)
-
-
