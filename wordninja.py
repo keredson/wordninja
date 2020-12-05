@@ -25,6 +25,7 @@ __version__ = '2.1.0'
 #   <list of contractions>
 
 
+MAGIC_LENGTH = 3
 class FileTypeMagicBytesRe():
   BZIP_FILE = re.compile(b'^\\x42\\x5a\\x68')
   GZIP_FILE = re.compile(b'^\\x1f\\x8b\\x08')
@@ -91,7 +92,7 @@ class LanguageModel(object):
 
 def check_magic(word_file, magic):
   with open(word_file, 'rb') as f:
-    return magic.match(f.read())
+    return magic.match(f.read(MAGIC_LENGTH))
 
 DEFAULT_LANGUAGE_MODEL = LanguageModel(os.path.join(os.path.dirname(os.path.abspath(__file__)),'wordninja','wordninja_words.txt.bz2'))
 _SPLIT_RE = re.compile("[^a-zA-Z0-9']+")
