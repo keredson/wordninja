@@ -36,8 +36,13 @@ class LanguageModel(object):
 
   def split(self, s):
     """Uses dynamic programming to infer the location of spaces in a string without spaces."""
-    l = [self._split(x) for x in _SPLIT_RE.split(s)]
-    return [item for sublist in l for item in sublist]
+    punctuations = _SPLIT_RE.findall(s)
+    texts = _SPLIT_RE.split(s)
+    assert len(punctuations) + 1 == len(texts)
+    new_texts = [self._split(x) for x in texts]
+    for i, punctuation in enumerate(punctuations):
+      new_texts.insert(2*i+1, punctuation)
+    return [item for sublist in new_texts for item in sublist]
 
 
   def _split(self, s):
