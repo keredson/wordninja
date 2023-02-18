@@ -40,8 +40,9 @@ class LanguageModel(object):
     texts = _SPLIT_RE.split(s)
     assert len(punctuations) + 1 == len(texts)
     new_texts = [self._split(x) for x in texts]
-    for i, punctuation in enumerate(punctuations):
-      new_texts.insert(2*i+1, punctuation)
+    # this just seems to add spaces back to string, if they are already detected?
+    # for i, punctuation in enumerate(punctuations):
+    #  new_texts.insert(2*i+1, punctuation)
     return [item for sublist in new_texts for item in sublist]
 
 
@@ -83,9 +84,7 @@ class LanguageModel(object):
     return reversed(out)
 
 DEFAULT_LANGUAGE_MODEL = LanguageModel(os.path.join(os.path.dirname(os.path.abspath(__file__)),'wordninja','wordninja_words.txt.gz'))
-_SPLIT_RE = re.compile(r"\s+")
+_SPLIT_RE = re.compile(r"\/+|\\+|_+|-+|\s+")
 
 def split(s):
   return DEFAULT_LANGUAGE_MODEL.split(s)
-
-
