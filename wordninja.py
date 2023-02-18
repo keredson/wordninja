@@ -40,7 +40,8 @@ class LanguageModel(object):
     texts = _SPLIT_RE.split(s)
     assert len(punctuations) + 1 == len(texts)
     new_texts = [self._split(x) for x in texts]
-    # this just seems to add spaces to the result array, if they are already in the input string?
+    # this just seems to add punctuation/spaces (after PR #13) to the result array, if they are already in the input string
+    # prior to PR # 13, it seems like it would add back anything in [^a-zA-Z0-9']+
     # for i, punctuation in enumerate(punctuations):
     #  new_texts.insert(2*i+1, punctuation)
     return [item for sublist in new_texts for item in sublist]
